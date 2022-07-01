@@ -2,6 +2,7 @@ package sandbox
 
 import cats.effect.IO
 import cats.effect._
+import cats.effect.cps._
 
 object HelloWorld {
 
@@ -35,4 +36,22 @@ object HelloWorld {
   Hello
   World
   */
+
+  def ignoreFirstEffect(): IO[Unit] = {
+    IO.println("Hello") >> IO.println("World")
+    // ほぼおなじ IO.println("Hello") *> IO.println("World")
+  }
+  /*
+  scala> import cats.effect.unsafe.implicits.global
+  import cats.effect.unsafe.implicits.global
+
+  scala> sandbox.HelloWorld.ignoreFirstEffect().unsafeRunSync()
+  Hello
+  World
+  */
+
+  def asyncPrint(): Unit = async[IO] {
+    IO.println("Hello").await
+    IO.println("World").await
+  }
 }
